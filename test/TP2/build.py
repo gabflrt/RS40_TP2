@@ -32,10 +32,16 @@ server =Server(SERVER_CONFIGURATION, SERVER_PASSWORD, SERVER_PRIVATE_KEY_FILENAM
     # regardez en haut et server/core.py
 
 # Signature du certificat par l'autorité de certification
+signed_certificate = certificate_authority.sign(server._csr,SERVER_PUBLIC_KEY_FILENAME)
 # signed_certificate = server.get_csr
 # A compléter regardez ca/core.py et server/core.py
 
 #impression des certificats à compléter regardez #print_pems
+print("______________________")
+print("CA public key filename")
+ppems.print_perms(CA_PUBLIC_KEY_FILENAME)
+ppems.print_perms(SERVER_PRIVATE_KEY_FILENAME)
+print("______________________")
 
 
 
