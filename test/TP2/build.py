@@ -10,7 +10,6 @@ from tools.core import Configuration
 from ca.core import CertificateAuthority
 from server.core import Server
 import print_pems as ppems
-# import print_pems as ppems  #a été ajouté pour l'impression
 
 RESOURCES_DIR = "resources/"
 CA_PRIVATE_KEY_FILENAME = RESOURCES_DIR + "ca-private-key.pem"
