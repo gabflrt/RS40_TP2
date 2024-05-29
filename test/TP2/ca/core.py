@@ -20,4 +20,4 @@ class CertificateAuthority:
         self._password = password
 
     def sign(self, csr, certificate_filename: str):
-        sign_csr(csr, self._private_key, self._public_key, certificate_filename)
+        sign_csr(csr, self._public_key, self._private_key, certificate_filename)
