@@ -6,42 +6,49 @@ Created on May 2022
 
 """
 
-from flask import Flask
-from flask import request
-from flask import render_template
+from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+
 import hashlib  
 
 HTTPS_MODE = True
 
 # définir le message secret
-SECRET_MESSAGE = "aziz" # A modifier
+SECRET_MESSAGE = "AzizLeBOSS"
+
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), nullable=False, unique=True)
+    password_hash = db.Column(db.String(64), nullable=False)
+
+    def set_password(self, password):
+        self.password_hash = hashlib.sha256(password.encode()).hexdigest()
+
+    def check_password(self, password):
+        return self.password_hash == hashlib.sha256(password.encode()).hexdigest()
 
 @app.route('/', methods=['GET', 'POST'])
-
 def get_secret_message():
     if request.method == 'POST':
-        # Reception des donnees du formulaire
         userName = request.form['userName']
         password = request.form['password']
-        #hash du mot de passe en entré pour obtenir le même résultat
-        inputPassword = hashlib.sha256(password.encode()).hexdigest()
-        # Verification du login. 
-        # Si correct -> redirection vers page.html
-        # Sinon redirection vers la page login.html avec message d'erreur
-        if userName == "user" and inputPassword == mdpHasher:
-            return render_template('accueil.html', userName=userName, message=
-    SECRET_MESSAGE)
+        
+        user = User.query.filter_by(username=userName).first()
+        
+        if user and user.check_password(password):
+            return render_template('accueil.html', userName=userName, message=SECRET_MESSAGE)
         else:
-            error = 'Oups! Votre login ou mot de passe est incorrect. Veuillez réessayer.'
+            error = 'Erreur. Connexion échouée. Veuillez réessayer.'
             return render_template('index.html', error=error)
     else:
         return render_template('index.html')
 
-#definition du mot de passe
-userPassword = "mdp"
-#hash du mot de passe avec SHA256 pour plus de sécurité
-mdpHasher = hashlib.sha256(userPassword.encode()).hexdigest()
+    
 
 
 if __name__ == "__main__":
@@ -54,6 +61,10 @@ if __name__ == "__main__":
         # HTTP version
         app.run(debug=True, host="0.0.0.0", port=8081)
     else :
+        # Crée la base de données et les tables si elles n'existent pas déjà
+
+        with app.app_context():
+            db.create_all()
         # HTTPS version
         # A compléter  : nécessité de déplacer les bons fichiers vers ce répertoire
         context = ("resources/server-public-key.pem", "resources/server-private-key.pem")
