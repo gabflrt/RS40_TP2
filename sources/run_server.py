@@ -9,7 +9,7 @@ Created on May 2022
 from flask import Flask
 
 # définir le message secret
-SECRET_MESSAGE = "hypsilophodon" # A modifier
+SECRET_MESSAGE = "aziz" # A modifier
 app = Flask(__name__)
 
 

@@ -14,7 +14,7 @@ import hashlib
 HTTPS_MODE = True
 
 # définir le message secret
-SECRET_MESSAGE = "aziz" # A modifier
+SECRET_MESSAGE = "J'explique !" # A modifier
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
